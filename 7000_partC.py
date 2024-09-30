@@ -71,11 +71,30 @@ class DataProcessor:
     def _scale_data(self):
         """
         Normalize the data according to the selected method
+        Plot the Curve before and after normalization
         """
-        self.scaler.fit(self.X_train)
+        plt.figure(figsize=(12, 6))
+        sns.kdeplot(self.X_train.mean(), bw_adjust=0.5)  # Adjust bw_adjust for smoothing
+        plt.title('Curve of Column Means before Normalization')
+        plt.xlabel('Mean Value')
+        plt.ylabel('Density')
+        plt.savefig('PNG_output/before_normalization', format="png")
 
+        plt.show()
+
+        self.scaler.fit(self.X_train)
         self.X_train_scaled = self.scaler.transform(self.X_train)
         self.X_test_scaled = self.scaler.transform(self.X_test)
+
+        normalized_df = pd.DataFrame(self.X_train_scaled, columns = self.X_train.columns)
+        plt.figure(figsize=(12, 6))
+        sns.kdeplot(normalized_df.mean(), bw_adjust=0.5)  # Adjust bw_adjust for smoothing
+        plt.title('Curve of Column Means after Normalization')
+        plt.xlabel('Mean Value')
+        plt.ylabel('Density')
+        plt.savefig('PNG_output/after_normalization', format="png")
+
+        plt.show()
 
     def feature_selection(self, feature_method, number = None):
         """
